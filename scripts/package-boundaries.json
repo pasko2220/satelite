@@ -1504,6 +1504,18 @@
     ],
     "external": ["cesium"]
   },
+  "veille-satellite": {
+    "exports": [
+      "./layers/veille-satellite",
+      "./layers/veille-satellite/source"
+    ],
+    "modules": [
+      "src/layers/veilleSatellite/index.js",
+      "src/layers/veilleSatellite/source.js",
+      "src/layers/veilleSatellite/records.js"
+    ],
+    "external": ["cesium"]
+  },
   "recent-imagery": {
     "exports": ["./layers/recent-imagery"],
     "modules": [
@@ -2928,6 +2940,9 @@
       "src/data/layerSnapshot.js",
       "src/layers/alpr/records.js",
       "src/layers/earthquakes/records.js",
+      "src/layers/veilleSatellite/source.js",
+      "src/layers/veilleSatellite/records.js",
+      "src/layers/veilleSatellite/index.js",
       "src/app/layers/perimeters.js",
       "src/layers/perimeters/index.js",
       "src/layers/perimeters/source.js",
@@ -3682,6 +3697,9 @@
       "src/app/localGeojsonServices.js",
       "src/layers/alpr/records.js",
       "src/layers/earthquakes/records.js",
+      "src/layers/veilleSatellite/source.js",
+      "src/layers/veilleSatellite/records.js",
+      "src/layers/veilleSatellite/index.js",
       "src/app/layers/perimeters.js",
       "src/layers/perimeters/index.js",
       "src/layers/perimeters/source.js",

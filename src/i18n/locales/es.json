@@ -392,6 +392,7 @@
   "UNAVAILABLE": "NO DISPONIBLE",
   "Live Flights": "Vuelos en vivo",
   "Earthquakes (24h)": "Terremotos (24 h)",
+  "Satellite Watch Alerts": "Alertas de vigilancia satelital",
   "No selected data layers": "No hay capas de datos seleccionadas",
   "Cleared {count} data layers": {
     "one": "Se limpió {count} capa de datos",

@@ -52,6 +52,7 @@ export const CATALOG_SOURCE_CONTRACTS = Object.freeze({
   'drone-airspace': contract(['drone-airspace'], ['getSnapshot']),
   cables: contract(['telegeography-submarine-cables'], ['fetch']),
   transit: contract(['transit'], ['requestSnapshot', 'getHistory']),
+  'veille-satellite': contract(['veille-satellite'], ['getSnapshot']),
 });
 
 /** An omitted provider is unavailable, never an authoritative empty dataset. */

@@ -1,0 +1,17 @@
+body { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; background: #fff; color: #1b2421;
+  font: 15px/1.5 "Segoe UI", system-ui, sans-serif; }
+h1 { font-size: 25px; line-height: 1.25; margin: 4px 0 12px; }
+h2 { font-size: 17px; margin: 28px 0 8px; border-bottom: 1px solid #cfd8d3; padding-bottom: 4px; }
+.marque { color: #55645d; font-size: 13px; margin: 0; }
+.avis { background: #fff4d6; border-left: 4px solid #b37400; padding: 10px 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid #e3e9e5; }
+th { color: #44534c; font-weight: 600; white-space: nowrap; }
+.images { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+figure { margin: 0; }
+figure img { width: 100%; display: block; background: #eef2ef; }
+figcaption { font-size: 13px; color: #44534c; padding-top: 4px; }
+.uri { font: 12px/1.4 Consolas, monospace; overflow-wrap: anywhere; color: #44534c; margin: 4px 0; }
+.action { text-align: right; margin: 0; }
+button { font: inherit; padding: 8px 14px; border: 1px solid #1f5d46; background: #1f5d46; color: #fff; border-radius: 6px; cursor: pointer; }
+@media print { .action { display: none; } body { max-width: none; padding: 0; } }

@@ -1,3 +1,9 @@
+> **Satelite** — copie de [God's Eye View](https://github.com/bilawalsidhu/gods-eye-view)
+> (commit `edd6212`, licence MIT, © Bilawal Sidhu) avec une couche **Alertes de veille satellite**
+> (Côte d'Ivoire : feux NASA FIRMS, perte de végétation Sentinel-2) et son serveur d'analyse
+> dans [`veille-satellite/`](veille-satellite/README.md). Mise en ligne : [DEPLOIEMENT.md](DEPLOIEMENT.md).
+> Le reste de ce document est celui du projet d'origine.
+
 <div align="center">
 
 # 🌐 God's Eye View

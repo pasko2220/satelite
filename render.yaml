@@ -1,0 +1,63 @@
+# Render Blueprint: two services from this repository.
+# Dashboard → New → Blueprint → choose this repository. Render asks for each
+# value marked `sync: false`; the API keys can be added later the same way.
+services:
+  # The 3D globe (God's Eye View + the satellite-watch layer).
+  - type: web
+    name: satelite-globe
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /
+    envVars:
+      # Never let a visitor reach the key-entry panel: keys live only here.
+      - key: GEV_KEY_SETUP_TRUSTED_PEERS
+        value: none
+      # Public address of the satellite-watch service below, for example
+      # https://satelite-veille.onrender.com (shown on its Render page).
+      - key: VITE_VEILLE_API_URL
+        sync: false
+      # Provider keys (all optional). Set spending limits at each provider:
+      # this public site uses them for every visitor.
+      - key: CESIUM_ION_TOKEN
+        sync: false
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+      - key: GOOGLE_MAPS_SERVER_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENSKY_CLIENT_ID
+        sync: false
+      - key: OPENSKY_CLIENT_SECRET
+        sync: false
+      - key: LL2_API_TOKEN
+        sync: false
+      - key: AISSTREAM_API_KEY
+        sync: false
+      - key: FIRMS_MAP_KEY
+        sync: false
+      - key: TOMTOM_API_KEY
+        sync: false
+      - key: MAPILLARY_CLIENT_TOKEN
+        sync: false
+
+  # The satellite-watch service (fires, Sentinel-2 comparison, alerts, reports).
+  - type: web
+    name: satelite-veille
+    runtime: docker
+    dockerfilePath: ./veille-satellite/Dockerfile
+    dockerContext: ./veille-satellite
+    plan: free
+    healthCheckPath: /api/etat
+    envVars:
+      # Code asked before any analysis or decision; Render generates it.
+      - key: VEILLE_JETON_ANALYSTE
+        generateValue: true
+      # Public address of the globe above, for example
+      # https://satelite-globe.onrender.com, so it may read the alerts.
+      - key: VEILLE_ORIGINES
+        sync: false

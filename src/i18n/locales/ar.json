@@ -499,6 +499,7 @@
   "UNAVAILABLE": "غير متاح",
   "Live Flights": "تتبّع الرحلات المباشر",
   "Earthquakes (24h)": "الزلازل (24 ساعة)",
+  "Satellite Watch Alerts": "تنبيهات المراقبة بالأقمار الصناعية",
   "No selected data layers": "لا توجد طبقات بيانات محددة",
   "Cleared {count} data layers": {
     "zero": "لم تُمسح أي طبقة بيانات ({count})",

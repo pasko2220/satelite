@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veille Satellite</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="vendor/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="vendor/leaflet.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="barre">
+    <div class="marque">
+      <span class="marque-nom">Veille Satellite</span>
+      <span class="marque-zone">Côte d'Ivoire · pilote Cavally</span>
+    </div>
+    <p class="demo" role="note">Démonstration : à ne pas utiliser pour une décision réelle</p>
+  </header>
+
+  <div class="cadre">
+    <aside class="panneau" aria-label="Panneau de commande">
+      <nav class="onglets" role="tablist" aria-label="Sections">
+        <button role="tab" id="onglet-feux" aria-controls="vue-feux" aria-selected="true">Feux</button>
+        <button role="tab" id="onglet-images" aria-controls="vue-images" aria-selected="false" tabindex="-1">Images</button>
+        <button role="tab" id="onglet-alertes" aria-controls="vue-alertes" aria-selected="false" tabindex="-1">Alertes <span id="compteur-alertes" class="compteur"></span></button>
+      </nav>
+
+      <section id="vue-feux" class="vue" role="tabpanel" aria-labelledby="onglet-feux">
+        <div class="ligne-titre">
+          <h2>Points chauds</h2>
+          <button id="actualiser-feux" class="discret" type="button">Actualiser</button>
+        </div>
+        <div class="choix" role="radiogroup" aria-label="Période">
+          <label><input type="radio" name="periode" value="1"> 24 heures</label>
+          <label><input type="radio" name="periode" value="2"> 48 heures</label>
+          <label><input type="radio" name="periode" value="7" checked> 7 jours</label>
+        </div>
+        <p id="etat-feux" class="etat" aria-live="polite">Chargement du flux NASA, jusqu'à une minute…</p>
+        <div id="chiffres-feux" class="chiffres"></div>
+        <h3>Par région</h3>
+        <ol id="regions-feux" class="classement"></ol>
+        <p class="note">Un point chaud n'est pas toujours un incendie : ce peut être un brûlage agricole, une torchère ou une surface très chaude. Les nuages peuvent aussi masquer un feu.</p>
+      </section>
+
+      <section id="vue-images" class="vue" role="tabpanel" aria-labelledby="onglet-images" hidden>
+        <h2>Comparer deux dates</h2>
+
+        <h3><span class="etape">1</span> Choisir la zone</h3>
+        <div class="boutons">
+          <button id="dessiner-zone" type="button">Dessiner sur la carte</button>
+          <button id="zone-centre" class="discret" type="button">10 km au centre</button>
+        </div>
+        <p id="etat-zone" class="etat" aria-live="polite">Aucune zone choisie.</p>
+
+        <h3><span class="etape">2</span> Trouver les images</h3>
+        <div class="champs">
+          <label>Du <input id="debut" type="date"></label>
+          <label>Au <input id="fin" type="date"></label>
+          <label>Nuages max. <span class="unite"><input id="nuages" type="number" min="0" max="100" value="30"> %</span></label>
+        </div>
+        <button id="chercher-scenes" class="principal" type="button" disabled>Chercher les images</button>
+        <p id="etat-scenes" class="etat" aria-live="polite"></p>
+        <div id="scenes" class="scenes"></div>
+
+        <h3><span class="etape">3</span> Lancer la comparaison</h3>
+        <p id="choix-dates" class="etat">Choisis une image « avant » et une image « après ».</p>
+        <button id="lancer-analyse" class="principal" type="button" disabled>Comparer</button>
+        <p id="etat-analyse" class="etat" aria-live="polite"></p>
+
+        <div id="resultat" hidden>
+          <div class="ligne-titre">
+            <h3>Résultat</h3>
+            <button id="ouvrir-comparateur" class="discret" type="button">Balayer avant / après</button>
+          </div>
+          <div id="chiffres-analyse" class="chiffres"></div>
+          <ul id="avertissements" class="avertissements"></ul>
+          <fieldset class="calques">
+            <legend>Afficher sur la carte</legend>
+            <label><input type="radio" name="calque" value="changement.png" checked> Baisse détectée</label>
+            <label><input type="radio" name="calque" value="avant.png"> Image avant</label>
+            <label><input type="radio" name="calque" value="apres.png"> Image après</label>
+            <label><input type="radio" name="calque" value="ndvi_avant.png"> Végétation avant</label>
+            <label><input type="radio" name="calque" value="ndvi_apres.png"> Végétation après</label>
+          </fieldset>
+          <label class="opacite">Opacité <input id="opacite" type="range" min="0" max="100" value="100"></label>
+          <div id="legende" class="legende"></div>
+          <p id="lien-alerte"></p>
+        </div>
+      </section>
+
+      <section id="vue-alertes" class="vue" role="tabpanel" aria-labelledby="onglet-alertes" hidden>
+        <div class="ligne-titre">
+          <h2>Signaux à vérifier</h2>
+        </div>
+        <label class="filtre">Statut
+          <select id="filtre-statut">
+            <option value="">Tous</option>
+            <option value="nouveau">Nouveau</option>
+            <option value="a_examiner">À examiner</option>
+            <option value="confirme">Confirmé</option>
+            <option value="rejete">Rejeté</option>
+            <option value="publie">Publié</option>
+            <option value="cloture">Clôturé</option>
+          </select>
+        </label>
+        <ul id="alertes" class="alertes"></ul>
+        <p class="exports">Exporter : <a href="/api/alertes.csv">CSV</a> · <a href="/api/alertes.geojson" download="alertes.geojson">GeoJSON</a></p>
+      </section>
+    </aside>
+
+    <main class="zone-carte">
+      <div id="carte" aria-label="Carte de la Côte d'Ivoire"></div>
+      <div class="fond-carte" role="group" aria-label="Fond de carte">
+        <button id="fond-satellite" type="button" aria-pressed="true">Satellite</button>
+        <button id="fond-plan" type="button" aria-pressed="false">Plan</button>
+      </div>
+      <div id="consigne-dessin" class="consigne" hidden>Clique et glisse pour tracer la zone · Échap pour annuler</div>
+    </main>
+
+    <aside id="dossier" class="dossier" aria-label="Dossier d'alerte" hidden></aside>
+  </div>
+
+  <dialog id="comparateur" aria-label="Comparaison avant et après">
+    <div class="comparateur-tete">
+      <strong id="comparateur-titre"></strong>
+      <form method="dialog"><button type="submit" class="discret">Fermer</button></form>
+    </div>
+    <div id="comparateur-vue" class="comparateur-vue">
+      <img id="image-apres" alt="Image après">
+      <div id="voile-avant" class="voile-avant"><img id="image-avant" alt="Image avant"></div>
+      <div id="trait" class="trait"></div>
+      <span class="etiquette gauche" id="etiquette-avant"></span>
+      <span class="etiquette droite" id="etiquette-apres"></span>
+    </div>
+    <label class="curseur">Position du balayage <input id="curseur" type="range" min="0" max="100" value="50"></label>
+  </dialog>
+</body>
+</html>

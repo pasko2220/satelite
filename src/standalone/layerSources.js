@@ -22,6 +22,7 @@ import { createFirmsSource } from '../layers/firms/source.js';
 import { createGhostMapsSource } from '../layers/ghostMaps/source.js';
 import { createMapillarySource } from '../layers/streetLevel/providers/mapillary/source.js';
 import { createReferenceSources } from '../sources/reference.js';
+import { createVeilleSatelliteSource } from '../layers/veilleSatellite/source.js';
 export { createReferenceSources as createStandaloneReferenceSources } from '../sources/reference.js';
 
 /** Select standalone providers without starting their acquisition. */
@@ -37,7 +38,13 @@ export function createStandaloneLayerSources(
   const installationTiles = createMapTiles({
     selectDecoded: ({ military }) => ({ military }),
   });
+  // The satellite-watch service runs separately (veille-satellite/); without
+  // its address the layer reports its source as not configured.
+  const veilleUrl = import.meta.env?.VITE_VEILLE_API_URL;
   const defaults = {
+    'veille-satellite': veilleUrl
+      ? createVeilleSatelliteSource({ baseUrl: veilleUrl })
+      : null,
     ...createReferenceSources(),
     directions: createDirectionsSource(),
     'recent-imagery': createRecentImagerySource(),

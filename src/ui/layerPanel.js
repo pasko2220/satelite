@@ -75,6 +75,7 @@ const PANEL_GROUPS = [
       'rocket-launches',
       'earthquakes',
       'local-firms',
+      'veille-satellite',
       'fire-perimeters',
       'gnss-integrity',
       's2-ghostmaps',

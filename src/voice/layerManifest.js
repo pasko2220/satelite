@@ -457,6 +457,9 @@ export const VOICE_OFF_LAYERS = Object.freeze({
   // query for this layer wait until there is room.
   'drone-airspace':
     'informational airspace layer; no room in the prompt budget',
+  // Alerts are reviewed on the companion service's analyst page, not by voice.
+  'veille-satellite':
+    'satellite-watch alerts reviewed on the analyst page; no room in the prompt budget',
 });
 
 const TYPE_NAMES = Object.freeze({
