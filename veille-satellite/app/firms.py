@@ -113,6 +113,8 @@ def actualiser(forcer: bool = False) -> dict:
     Sans cache (premier lancement), on attend le téléchargement."""
     cache = _lire_cache()
     age = datetime.now(timezone.utc) - datetime.fromisoformat(cache["recu_le"]) if cache and cache["recu_le"] else None
+    if age is not None and age < timedelta(minutes=config.ACTUALISATION_FORCEE_MINUTES):
+        forcer = False
     if age is not None and not forcer and age < timedelta(hours=config.CACHE_FEUX_HEURES):
         return cache
     if age is None:

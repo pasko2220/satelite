@@ -2,6 +2,7 @@
 import hmac
 import math
 import re
+import time
 from contextlib import asynccontextmanager
 from datetime import date
 
@@ -80,13 +81,47 @@ def _jeton_valide(requete: Request) -> bool:
     return hmac.compare_digest(requete.headers.get("x-jeton-analyste", ""), config.JETON_ANALYSTE)
 
 
+# Contre l'essai de milliers de codes : 10 mauvais codes par adresse en 15 minutes,
+# et 100 pour tout le site (une adresse se change facilement).
+FENETRE_ESSAIS = 15 * 60
+ESSAIS_MAX = {"adresse": 10, "site": 100}
+_echecs: dict[str, list[float]] = {}
+
+
+def _recents(cle: str, maintenant: float) -> int:
+    dates = [t for t in _echecs.get(cle, []) if maintenant - t < FENETRE_ESSAIS]
+    if dates:
+        _echecs[cle] = dates
+    else:
+        _echecs.pop(cle, None)
+    return len(dates)
+
+
+def _trop_d_essais(adresse: str, maintenant: float) -> bool:
+    return (_recents(adresse, maintenant) >= ESSAIS_MAX["adresse"]
+            or _recents("*site*", maintenant) >= ESSAIS_MAX["site"])
+
+
+def _noter_echec(adresse: str, maintenant: float):
+    if len(_echecs) > 10_000:  # mémoire bornée
+        _echecs.clear()
+    for cle in (adresse, "*site*"):
+        _echecs.setdefault(cle, []).append(maintenant)
+
+
 @app.middleware("http")
 async def protections(requete: Request, suivant):
     if requete.method == "POST":
         origine = requete.headers.get("origin")
         if origine and origine not in config.ORIGINES and origine != f"{requete.url.scheme}://{requete.url.netloc}":
             return JSONResponse({"detail": "Origine refusée."}, status_code=403)
+        adresse = requete.client.host if requete.client else "?"
+        maintenant = time.monotonic()
+        if _trop_d_essais(adresse, maintenant):
+            return JSONResponse({"detail": "Trop de codes incorrects : réessaie dans 15 minutes."}, status_code=429)
         if not _jeton_valide(requete):
+            if requete.headers.get("x-jeton-analyste"):
+                _noter_echec(adresse, maintenant)
             return JSONResponse({"detail": "Code analyste manquant ou incorrect."}, status_code=401)
     reponse = await suivant(requete)
     reponse.headers["Content-Security-Policy"] = CSP

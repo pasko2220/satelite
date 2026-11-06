@@ -38,6 +38,7 @@ FLUX_FIRMS = {
 JOURS_CONSERVES_FEUX = 7
 LICENCE_FIRMS = "NASA FIRMS, domaine public (citation demandée)"
 CACHE_FEUX_HEURES = 3
+ACTUALISATION_FORCEE_MINUTES = 10  # le bouton « Actualiser » est public : pas plus d'un téléchargement NASA par 10 min
 
 # Périmètre du pilote.
 ZONE_PILOTE = "Cavally"

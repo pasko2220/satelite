@@ -213,6 +213,22 @@ class EnLigne(unittest.TestCase):
         self.assertFalse(self.main._jeton_valide(self.requete("faux")))
         self.assertFalse(self.main._jeton_valide(self.requete()))
 
+    def test_trop_de_mauvais_codes_bloque_puis_libere(self):
+        self.main._echecs.clear()
+        for _ in range(self.main.ESSAIS_MAX["adresse"]):
+            self.assertFalse(self.main._trop_d_essais("1.2.3.4", 0))
+            self.main._noter_echec("1.2.3.4", 0)
+        self.assertTrue(self.main._trop_d_essais("1.2.3.4", 1))
+        self.assertFalse(self.main._trop_d_essais("5.6.7.8", 1))
+        self.assertFalse(self.main._trop_d_essais("1.2.3.4", self.main.FENETRE_ESSAIS + 1))
+
+    def test_plafond_pour_tout_le_site(self):
+        self.main._echecs.clear()
+        for i in range(self.main.ESSAIS_MAX["site"]):
+            self.main._noter_echec(f"10.0.0.{i}", 0)
+        self.assertTrue(self.main._trop_d_essais("une-nouvelle-adresse", 1))
+        self.main._echecs.clear()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -53,6 +53,12 @@ Dans **satelite-veille** → **Environment**, la variable `VEILLE_JETON_ANALYSTE
 Clique sur l'œil pour la voir. C'est ce code que la page d'analyse demande avant toute action.
 Ne le partage qu'avec les analystes.
 
+- Le code reste dans l'onglet jusqu'à sa fermeture, ou jusqu'au bouton **Oublier le code analyste** (en haut à droite).
+- Après 10 codes faux en 15 minutes depuis une même adresse (100 pour tout le site), le serveur refuse les essais
+  pendant 15 minutes.
+- **Si le code a fuité**, ou si un analyste s'en va : change la valeur de `VEILLE_JETON_ANALYSTE`
+  (**Generate** ou un nouveau texte long), puis **Save**. L'ancien code ne marche plus, pour tout le monde.
+
 L'espace analyste est l'adresse de **satelite-veille** elle-même.
 
 ## Limites de la formule gratuite

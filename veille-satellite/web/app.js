@@ -27,9 +27,15 @@ function el(balise, attributs = {}, ...enfants) {
   return noeud;
 }
 
-// En ligne, les actions exigent le code analyste ; il est gardé le temps de l'onglet.
+// En ligne, les actions exigent le code analyste ; il est gardé le temps de l'onglet, ou jusqu'à « Oublier le code ».
 function lireJeton() { try { return sessionStorage.getItem("jeton-analyste") || ""; } catch { return ""; } }
-function garderJeton(jeton) { try { sessionStorage.setItem("jeton-analyste", jeton); } catch { /* navigation privée */ } }
+function garderJeton(jeton) {
+  try {
+    if (jeton) sessionStorage.setItem("jeton-analyste", jeton);
+    else sessionStorage.removeItem("jeton-analyste");
+  } catch { /* navigation privée */ }
+  $("oublier-code").hidden = !lireJeton();
+}
 
 async function api(chemin, options = {}, deuxiemeEssai = false) {
   const corps = options.corps;
@@ -45,6 +51,7 @@ async function api(chemin, options = {}, deuxiemeEssai = false) {
       return api(chemin, { corps }, true);
     }
   }
+  if (reponse.status === 401 && deuxiemeEssai) garderJeton("");  // code faux : ne pas le garder
   if (!reponse.ok) {
     const detail = donnees && donnees.detail;
     const message = Array.isArray(detail) ? detail[0].msg.replace(/^Value error, /, "") : detail;
@@ -53,7 +60,10 @@ async function api(chemin, options = {}, deuxiemeEssai = false) {
   return donnees;
 }
 
-const formatDate = (iso) => iso ? new Date(iso).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }) + " UTC" : "—";
+$("oublier-code").onclick = () => garderJeton("");
+garderJeton(lireJeton());
+
+const formatDate =(iso) => iso ? new Date(iso).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }) + " UTC" : "—";
 const formatJour = (iso) => new Date(iso + "T00:00:00Z").toLocaleDateString("fr-FR", { dateStyle: "medium", timeZone: "UTC" });
 const nombre = (n, d = 0) => Number(n).toLocaleString("fr-FR", { maximumFractionDigits: d });
 

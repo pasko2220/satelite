@@ -30,6 +30,8 @@ a { color: var(--accent); }
 .marque-nom { font-size: 17px; font-weight: 700; }
 .marque-zone { color: var(--texte-2); font-size: 13px; }
 .demo { margin: 0; color: var(--ambre); font-size: 13px; text-align: right; }
+.barre-droite { display: flex; align-items: center; gap: 12px; }
+#oublier-code { white-space: nowrap; }
 
 .cadre { flex: 1; min-height: 0; display: flex; }
 .panneau { flex: none; width: 360px; display: flex; flex-direction: column; min-height: 0;
