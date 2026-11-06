@@ -74,6 +74,7 @@ function chiffre(valeur, libelle) {
 /* Carte */
 
 const carte = L.map("carte", { zoomControl: true, preferCanvas: true, minZoom: 5, maxZoom: 16 }).fitBounds([[4.3, -8.7], [10.8, -2.4]]);
+carte.attributionControl.setPrefix(false);  // la mention « Leaflet » n'est pas obligatoire ; celles des images le sont
 const rendu = L.canvas({ padding: 0.3 });
 const fonds = {
   satellite: L.tileLayer("https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg", {
